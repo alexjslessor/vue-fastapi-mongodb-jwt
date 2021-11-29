@@ -1,0 +1,6 @@
+export const LOGIN_ACTION = 'LOGIN_ACTION'
+export const LOGOUT_ACTION = 'LOGOUT_ACTION'
+// export const SET_SNACKBAR = 'SET_SNACKBAR'
+// export const CLEAR_SNACKBAR = 'CLEAR_SNACKBAR'
+// export const SOME_MUTATION = 'SOME_MUTATION'
+

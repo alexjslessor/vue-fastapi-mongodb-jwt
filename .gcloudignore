@@ -1,0 +1,10 @@
+.pytest_cache
+*.bak
+.git
+frontend
+tests
+test_backend
+pytest.ini
+README.md
+setup.cfg
+startup.sh

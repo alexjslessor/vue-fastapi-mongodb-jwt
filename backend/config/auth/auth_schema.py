@@ -12,7 +12,6 @@ from fastapi_users.password import verify_and_update_password
 from fastapi_users.models import BaseUserCreate, BaseUserDB, BaseUserUpdate, BaseUser
 from fastapi_users.models import BaseUserCreate
 from fastapi.responses import JSONResponse
-# from .auth_utils.override import FastAPIUsersOverride
 
 from pydantic import  BaseModel, Field, validator, EmailStr, root_validator
 from datetime import datetime, timezone

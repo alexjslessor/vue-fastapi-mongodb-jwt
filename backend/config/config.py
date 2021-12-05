@@ -1,5 +1,5 @@
 import functools
-from pydantic import BaseSettings, AnyUrl
+from pydantic import BaseSettings, AnyUrl, BaseModel
 from os import environ
 from typing import List
 
@@ -19,10 +19,10 @@ class _BaseSettings(BaseSettings):
     MAIL_SERVER = 'in-v3.mailjet.com'
     MAIL_TLS = False
     MAIL_SSL = True    
-    MAILJET_SENDER = 'aslessor@commercialoil.ca'
+    MAILJET_SENDER = 'atom@comrom.ca'
     
-    GCP_PROJECT: str = str(environ.get('GCP_PROJECT', 'shipping-application-281315'))
-    GCP_BUCKET: str = str(environ.get('GCP_BUCKET', 'comoil-fastapi'))
+    GCP_PROJECT: str = str(environ.get('GCP_PROJECT', 'hi-app-281315'))
+    GCP_BUCKET: str = str(environ.get('GCP_BUCKET', 'asd-fastapi'))
     K_SERVICE_ENV: str = str(environ.get('K_SERVICE', 'local'))
 
     OPENAPI_URL: str = '/docs_openapi'
@@ -71,4 +71,25 @@ class DevSettings(_BaseSettings):
 @functools.lru_cache()
 def get_settings(**kwargs) -> BaseSettings:
     return DevSettings(**kwargs)
+
+
+class jwtSettings(BaseModel):
+    authjwt_secret_key: str = str(environ.get('SECRET'))
+    # authjwt_secret_key: str = generate_secret_key(db=SessionLocal())
+    # authjwt_token_location: set = {"headers", "cookies"}
+    # authjwt_cookie_secure: bool = False
+    # authjwt_cookie_csrf_protect: bool = True
+    # authjwt_access_token_expires: int = int(settings.ACCESS_TOKEN_EXPIRES)
+    # authjwt_refresh_token_expires: int = int(settings.REFRESH_TOKEN_EXPIRES)
+    # authjwt_cookie_samesite: str = settings.SAME_SITE_COOKIES
+    # authjwt_denylist_enabled: bool = True
+    # authjwt_denylist_token_checks: set = {"access", "refresh"}
+
+
+from fastapi_jwt_auth import AuthJWT
+
+@AuthJWT.load_config
+def get_config():
+    return jwtSettings()
+
 

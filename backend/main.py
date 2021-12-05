@@ -1,8 +1,13 @@
-from fastapi import FastAPI, Depends, Response
+from fastapi import FastAPI, Depends, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
-# from .routers.v2 import crud_routes
-# from .routers.v2.blog import blog_routes
-from .routers.v2.stripe import (products)
+
+from starlette.responses import JSONResponse
+
+from fastapi_jwt_auth.exceptions import AuthJWTException
+
+from .routers.v1.stripe import (products)
+from .routers.v1.auth import (fastapi_jwt_auth_routes)
+
 from .config.auth.auth_backends import jwt_authentication
 from .config.auth.fapi_users import api_users
 from .config.config import get_settings
@@ -25,8 +30,23 @@ app.add_middleware(CORSMiddleware,
                    allow_methods=["*"], 
                    allow_headers=["*"])
 
-app.include_router(products.router, tags=['Stripe'])
+@app.exception_handler(AuthJWTException)
+def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
 
+app.include_router(products.router, 
+                    tags=['Stripe'])
+
+app.include_router(fastapi_jwt_auth_routes.router, 
+                    prefix='/auth', 
+                    tags=['Fastapi JWT Auth'])
+
+# Login
+# jwt_auth_router = api_users.get_auth_router(jwt_authentication)
+# app.include_router(
+#     jwt_auth_router, 
+#     prefix="/auth/jwt", 
+#     tags=AUTH_TAGS)
 
 # Register
 app.include_router(
@@ -34,31 +54,6 @@ app.include_router(
     prefix="/auth", 
     tags=AUTH_TAGS)
 
-
-# Login
-jwt_auth_router = api_users.get_auth_router(jwt_authentication)
-app.include_router(
-    jwt_auth_router, 
-    prefix="/auth/jwt", 
-    tags=AUTH_TAGS)
-
-
-# Request verify
-# request_verification_router = api_users.get_verify_router(
-#     SECRET, 
-#     after_verification_request=after_verification_request)
-
-# request_verification_router.routes = [route for route in request_verification_router.routes if route.name != "verify"]
-# app.include_router(request_verification_router,
-#                    prefix="/auth", 
-#                    tags=AUTH_TAGS)
-
-# Verify Account
-# app.include_router(
-#     api_users.get_verify_account(SECRET, 
-#                                  after_verification=after_verification_request),
-#     prefix='/auth',
-#     tags=AUTH_TAGS)
 
 '''
 Forgot Password and Reset Password
@@ -77,7 +72,7 @@ app.include_router(
 
 
 # https://frankie567.github.io/fastapi-users/configuration/authentication/jwt/#tip-refresh
-@app.post("/auth/jwt/refresh")
-async def refresh_jwt(response: Response, user=Depends(api_users.current_user())):
-    return await jwt_authentication.get_login_response(user, response)
+# @app.post("/auth/jwt/refresh")
+# async def refresh_jwt(response: Response, user=Depends(api_users.current_user())):
+#     return await jwt_authentication.get_login_response(user, response)
 

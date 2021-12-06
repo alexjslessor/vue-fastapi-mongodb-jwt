@@ -2,7 +2,7 @@ from starlette.responses import JSONResponse, RedirectResponse, FileResponse
 from starlette.requests import Request
 
 from fastapi.encoders import jsonable_encoder
-
+# from fastapi.security import verify_password
 from fastapi import (APIRouter,
                      Depends,
                      BackgroundTasks,
@@ -19,15 +19,17 @@ from typing import Optional, List
 # from bson import ObjectId
 from pydantic import UUID4, BaseModel, EmailStr, Field
 
-from ....config.config import get_settings
-# from ....utils import Utils
-# from ....apis.deps import *
-# from ....db.schemas import User, PostsModel, PyObjectId
+from ....settings import get_settings
 from ....config.auth.conn.conn import get_db
 
 from fastapi_jwt_auth import AuthJWT
 from motor.motor_asyncio import AsyncIOMotorDatabase
 import uuid
+from datetime import datetime, timedelta
+from typing import Any, Union
+
+from jose import jwt
+from passlib.context import CryptContext
 
 router = APIRouter()
 settings = get_settings()
@@ -67,6 +69,31 @@ class User(BaseModel):
     # is_verified: bool = False
 
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+ALGORITHM = "HS256"
+
+def create_access_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    to_encode = {"exp": expire, "sub": str(subject)}
+    
+    encoded_jwt = jwt.encode(to_encode, 
+                            settings.SECRET, 
+                            algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+
 # https://indominusbyte.github.io/fastapi-jwt-auth/usage/basic/
 @router.post('/jwt/login')
 async def login(
@@ -75,8 +102,9 @@ async def login(
     db: AsyncIOMotorDatabase = Depends(get_db)):
     
     query = await db["User"].find_one({'email': user.email})
-
-    if query['email'] != user.email:
+    
+    
+    if query['email'] != user.email or verify_password(user.password, query['hashed_password']):
         raise HTTPException(status_code=401,
                             detail="Bad username or password")
 

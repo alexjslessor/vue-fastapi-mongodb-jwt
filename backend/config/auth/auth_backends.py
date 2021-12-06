@@ -1,6 +1,6 @@
 from fastapi_users.authentication import JWTAuthentication
 # from httpx_oauth.clients.google import GoogleOAuth2
-from ..config import get_settings
+from ...settings import get_settings
 
 settings = get_settings()
 SECRET = settings.SECRET

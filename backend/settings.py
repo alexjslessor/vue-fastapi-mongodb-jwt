@@ -2,6 +2,7 @@ import functools
 from pydantic import BaseSettings, AnyUrl, BaseModel
 from os import environ
 from typing import List
+from fastapi_jwt_auth import AuthJWT
 
 '''
 setting env vars
@@ -86,10 +87,11 @@ class jwtSettings(BaseModel):
     # authjwt_denylist_token_checks: set = {"access", "refresh"}
 
 
-from fastapi_jwt_auth import AuthJWT
 
 @AuthJWT.load_config
 def get_config():
     return jwtSettings()
 
 
+AUTH_V1_PREFIX = "/"
+AUTH_TAGS = ["Authentication"]

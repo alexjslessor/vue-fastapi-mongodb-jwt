@@ -15,7 +15,8 @@ from fastapi.responses import JSONResponse
 
 from pydantic import  BaseModel, Field, validator, EmailStr, root_validator
 from datetime import datetime, timezone
-from ..config import get_settings
+from ...settings import get_settings
+
 from .validators import *
 from bson import ObjectId
 import base64

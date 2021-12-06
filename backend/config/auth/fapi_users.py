@@ -1,4 +1,3 @@
-import types
 from fastapi_users import FastAPIUsers
 from .auth_backends import auth_backends
 from .auth_schema import UserCreate, User, UserDB, UserUpdate

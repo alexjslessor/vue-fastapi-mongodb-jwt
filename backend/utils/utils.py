@@ -10,7 +10,7 @@ from pydantic import EmailStr
 from typing import List
 from fastapi_mail.email_utils import DefaultChecker
 from datetime import date
-from .config.config import get_settings
+from ..settings import get_settings
 
 settings = get_settings()
 

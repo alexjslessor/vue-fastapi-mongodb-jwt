@@ -1,5 +1,5 @@
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
-from .config import get_settings
+from ..settings import get_settings
 
 settings = get_settings()
 

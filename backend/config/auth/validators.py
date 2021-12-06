@@ -4,7 +4,7 @@
 from pydantic import BaseModel, validator
 from datetime import datetime, timezone
 from fastapi import status, HTTPException
-from ..config import get_settings
+from ...settings import get_settings
 
 settings = get_settings()
 

@@ -2,7 +2,7 @@ from fastapi import Request
 from typing import Dict, Any, Optional, Union
 from fastapi_users import BaseUserManager, InvalidPasswordException
 from fastapi_users.jwt import generate_jwt
-from ..config import get_settings
+from ...settings import get_settings
 from .auth_schema import UserDB, UserCreate
 from ..config_email import get_email_config
 from ...apis.stripe.stripe_api import create_stripe_user

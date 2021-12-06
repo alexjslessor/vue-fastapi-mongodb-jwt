@@ -21,17 +21,6 @@ from ....funcs.json_responses import (exception_400,
                                       error_400,
                                       json_resp_success_200)
 
-async def pagination(skip: int = Query(0, ge=0),
-                    limit: int = Query(0, ge=0)) -> Tuple[int, int]:
-    capped_limit = min(100, limit)
-    return (skip, capped_limit)
-
-
-async def get_object_id(id: str) -> ObjectId:
-    try:
-        return ObjectId(id)
-    except (errors.InvalidId, TypeError):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 async def get_product_by_oid_or_404(id: ObjectId = Depends(get_object_id),

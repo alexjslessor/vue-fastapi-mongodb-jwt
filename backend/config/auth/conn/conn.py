@@ -2,7 +2,7 @@ from fastapi_users.db import MongoDBUserDatabase
 from motor.motor_asyncio import AsyncIOMotorClient
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from fastapi import Depends
-from ...config import get_settings
+from ....settings import get_settings
 from ..auth_schema import UserDB
 from ..after_actions import UserManager
 from pymongo.errors import ServerSelectionTimeoutError

@@ -3,7 +3,10 @@ from enum import Enum
 from pprint import pprint
 from json import loads, dumps
 from fastapi import Depends
-from ...config.config import get_settings
+
+from ...db.schemas.stripe.stripe_schema import ReadStripeProduct
+# from ...config.config import get_settings
+from ...settings import get_settings
 
 
 settings = get_settings()
@@ -64,14 +67,15 @@ def stripe_to_json(data):
     a = dumps(data)
     return loads(a)
 
-def create_stripe_user(user_email):
-    '''
-    https://stripe.com/docs/billing/customer
-    https://stripe.com/docs/api/customers/create'''
-    c = stripe.Customer.create(email=user_email, 
-                            #    payment_method='pm_1FWS6ZClCIKljWvsVCvkdyWg', 
-                            #    invoice_settings={'default_payment_method': 'pm_1FWS6ZClCIKljWvsVCvkdyWg'}
-                               )
+# def create_stripe_user(user_email):
+#     '''
+#     https://stripe.com/docs/billing/customer
+#     https://stripe.com/docs/api/customers/create'''
+#     c = stripe.Customer.create(email=user_email, 
+#                             #    payment_method='pm_1FWS6ZClCIKljWvsVCvkdyWg', 
+#                             #    invoice_settings={'default_payment_method': 'pm_1FWS6ZClCIKljWvsVCvkdyWg'}
+#                                )
+    # return c['id']
 
 def calculate_order_total(items):
     # Calculate the order total on the server to prevent
@@ -141,7 +145,14 @@ def join_all_products_prices():
                 if _price['product'] == _product['id']]
     return lst
 
-
+# def read_stripe_products():
+#     p = join_all_products_prices()
+    
+#     result = []
+#     for i in p:
+#         result.append(ReadStripeProduct(**i))
+#     # result = [ReadStripeProduct(**i) async for i in p]
+#     return result
 
 if __name__ == "__main__":
     p = join_all_products_prices()

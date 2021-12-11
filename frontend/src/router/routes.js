@@ -10,6 +10,8 @@ import CheckoutPage from '@/views/CheckoutPage';
 import Account from '@/views/Account';
 import Blog from '@/views/Blog';
 import Post from '@/components/blog/Post';
+import ChatV1 from '@/components/ChatV1';
+
 
 // Auth page and child components
 import AuthPage from '@/views/AuthPage';
@@ -29,6 +31,13 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
+    children: [
+      {
+        path: 'chat',
+        name: 'Chat',
+        component: ChatV1,
+      },
+    ]
   },
   {
     path: '/auth',
@@ -114,7 +123,7 @@ const routes = [
     meta: {protectedRoute: true},
     beforeEnter: (to, from, next) => {
       if (from.name == 'Login') {
-        const newUser = JSON.parse(localStorage.getItem("isFirstLogin") );
+        const newUser = JSON.parse( localStorage.getItem("isFirstLogin") );
         // console.log('dashboard before enter: ', newUser);
         if ( newUser ) {
           next( { path: '/reset' } );
@@ -125,6 +134,7 @@ const routes = [
         next();
       }
     },
+    
   },
 ];
 

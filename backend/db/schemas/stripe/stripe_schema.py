@@ -70,6 +70,17 @@ class StripeRecurring(BaseModel):
      usage_type: Optional[StripeUsageType]
 
 
+
+class ReadStripeProduct(BaseModel):
+    product_id: Optional[str]
+    product_img: Optional[str] = None
+    product_description: Optional[str]
+    price_id: Optional[str]
+    price: Optional[str]
+    quantity: Optional[int]
+    subtotal: Optional[float]
+
+
 class UpdateStripePriceModel(BaseModel):
     id: Optional[str]
     object: Optional[str]

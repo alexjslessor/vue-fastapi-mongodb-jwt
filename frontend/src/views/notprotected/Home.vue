@@ -7,11 +7,12 @@
       <!-- <video src='@/assets/video/cannabis_field.mp4' muted loop autoplay></video> -->
     <!-- </section> -->
     <!-- <div class="overlay"></div> -->
+      <router-view />
 
-    <home/>
+    <!-- <home/>
     <about/>
     <pricing/>
-    <foote/>
+    <foote/> -->
   </div>
 </template>
 

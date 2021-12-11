@@ -1,7 +1,8 @@
 import stripe
 from pprint import pprint
 from json import loads, dumps
-from ...config.config import get_settings
+# from ...config.config import get_settings
+from ...settings import get_settings
 
 settings = get_settings()
 

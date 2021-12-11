@@ -236,18 +236,25 @@ Vue.use(Vuex)
       return resp.data;
     },
 
-    async query_products({ state, commit, dispatch }, event) {
-      // if(!state.productState.length ) {
-        console.log('event', event);
-        const url = `/query_db/${event.query}/${event.filter}`;
+    async read_products({ state, commit, dispatch }) {
+        const url = `/read/stripe/product/all`;
         let resp = await axiosHeaders.get(url)
-        // let resp = dispatch('query_db', event)
-        console.log('query products: ', resp)
+        console.log('read_products: ', resp)
         commit('SET_PRODUCT_STATE', resp.data);
-      // } else {
-        // console.log('state already loaded')
-      // }
     },
+
+    // async query_products({ state, commit, dispatch }, event) {
+    //   // if(!state.productState.length ) {
+    //     console.log('event', event);
+    //     const url = `/query_db/${event.query}/${event.filter}`;
+    //     let resp = await axiosHeaders.get(url)
+    //     // let resp = dispatch('query_db', event)
+    //     console.log('query products: ', resp)
+    //     commit('SET_PRODUCT_STATE', resp.data);
+    //   // } else {
+    //     // console.log('state already loaded')
+    //   // }
+    // },
 
 
     async postForm({ }, obj) {

@@ -6,13 +6,15 @@ from starlette.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 
 from .routers.v1.stripe import (products)
-from .routers.v1.auth import (fastapi_jwt_auth_routes)
+# from .routers.v1.auth import (fastapi_jwt_auth_routes)
+from .routers.v1 import websock_routes
 
 from .config.auth.auth_backends import jwt_authentication
 from .config.auth.fapi_users import api_users
-from .config.config import get_settings
+# from .config.config import get_settings
+from .settings import get_settings, AUTH_TAGS
 from .config.auth.after_actions import *
-from .config.route_prefix import *
+# from .config.route_prefix import *
 
 settings = get_settings()
 SECRET = settings.SECRET
@@ -30,23 +32,32 @@ app.add_middleware(CORSMiddleware,
                    allow_methods=["*"], 
                    allow_headers=["*"])
 
+
+
+
 @app.exception_handler(AuthJWTException)
-def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+def authjwt_exception_handler(
+    request: Request, exc: AuthJWTException):
+    return JSONResponse(
+        status_code=exc.status_code, 
+        content={"detail": exc.message})
 
-app.include_router(products.router, 
-                    tags=['Stripe'])
 
-app.include_router(fastapi_jwt_auth_routes.router, 
-                    prefix='/auth', 
-                    tags=['Fastapi JWT Auth'])
+
+
+app.include_router(products.router, tags=['Stripe'])
+app.include_router(websock_routes.router, tags=['Chat'])
+
+# app.include_router(fastapi_jwt_auth_routes.router, 
+                    # prefix='/auth', 
+                    # tags=['Fastapi JWT Auth'])
 
 # Login
-# jwt_auth_router = api_users.get_auth_router(jwt_authentication)
-# app.include_router(
-#     jwt_auth_router, 
-#     prefix="/auth/jwt", 
-#     tags=AUTH_TAGS)
+jwt_auth_router = api_users.get_auth_router(jwt_authentication)
+app.include_router(
+    jwt_auth_router, 
+    prefix="/auth/jwt", 
+    tags=AUTH_TAGS)
 
 # Register
 app.include_router(

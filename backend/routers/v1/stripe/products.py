@@ -13,10 +13,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from fastapi.encoders import jsonable_encoder
 from typing import Optional, List, Dict
 import stripe
-import tempfile
-import base64
-from json import loads, dumps
-from pprint import pprint
+
 
 from ....config.auth.auth_schema import User
 from ....config.auth.fapi_users import api_users
@@ -30,7 +27,9 @@ from ....db.schemas.stripe.stripe_schema import (
     PydanticModels as pm, 
     UpdateStripeProductModel as uspm)
 
-from ....config.config import get_settings
+# from ....config.config import get_settings
+from ....settings import get_settings
+
 from ....apis.stripe.deps import *
 
 router = APIRouter()
@@ -74,41 +73,20 @@ async def after_user_create(
 # async def get_product_by_sku(product: ReadProduct = Depends(get_product_by_sku_or_404)) -> ReadProduct:
 #     return product
 
-# @router.get("/read/all_shipto", 
-#             response_description="Read all shipping addresses")
-# async def read_all_products(pagination: Tuple[int, int] = Depends(pagination),
-#                     database: AsyncIOMotorDatabase = Depends(get_database)
-#                     ) -> List[ReadShippingAddress]:
-#     skip, limit = pagination
-#     query = database["ShipTo"].find({}, skip=skip, limit=limit)
-#     results = [ReadShippingAddress(**raw_addr) async for raw_addr in query]
-#     # print('list_shipto: ', results)
-#     return results
-
-
-
-# @router.get("/read/product/{query}/{filter}")
-# async def read_single_product(query: ProductModel, 
-#                    filter: Optional[str] = None,
-#                    current_user: User = Depends(api_users.current_user())):
-
-#     if query == ProductModel.single_product:
-#         # p = get_single_product(filter)
-#         p = get_product_by_id(filter)
-#         return stripe_to_json(p)
-
-#     if query == ProductModel.subscriptions:
-#         p = get_subscriptions()
-#         return stripe_to_json(p)
-    
-#     return JSONResponse(status_code=status.HTTP_200_OK, 
-#                         content=query)
+@router.get("/read/stripe/product/all", 
+            response_description="Read all stripe products")
+async def read_all_stripe_products(
+    # products = Depends(read_stripe_products),
+    ):
+    p = join_all_products_prices()
+    return stripe_to_json(p)
+    # return products
 
 
 @router.get("/query_db/{query}/{filter}")
 async def query_db(query: ProductModel, 
                    filter: Optional[str] = None,
-                   current_user: User = Depends(api_users.current_user())
+                #    current_user: User = Depends(api_users.current_user())
                    ):
 
     if query == ProductModel.all_products:
@@ -186,6 +164,7 @@ def create_checkout_session():
 
 
 
+
 # https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#redirect
 # @app.route('/create-customer-portal-session', methods=['POST'])
 # def customer_portal():
@@ -197,12 +176,33 @@ def create_checkout_session():
 #   return redirect(session.url)
 
 
+# @router.get("/read/product/{query}/{filter}")
+# async def read_single_product(query: ProductModel, 
+#                    filter: Optional[str] = None,
+#                    current_user: User = Depends(api_users.current_user())):
+
+#     if query == ProductModel.single_product:
+#         # p = get_single_product(filter)
+#         p = get_product_by_id(filter)
+#         return stripe_to_json(p)
+
+#     if query == ProductModel.subscriptions:
+#         p = get_subscriptions()
+#         return stripe_to_json(p)
+    
+#     return JSONResponse(status_code=status.HTTP_200_OK, 
+#                         content=query)
+
+
+
+
 # img1 = 'https://storageapi.fleek.co/alexjslessor-team-bucket/productImg/wall6.png'
 # 'https://storageapi.fleek.co/alexjslessor-team-bucket/productImg/spacescape_5.png'
 
 # class UpdateStripe(BaseModel):
     # update: List[str]
     # update: str
+
 
 # @router.post("/ecom/update_db/{query}")
 # async def update_db(query: str,

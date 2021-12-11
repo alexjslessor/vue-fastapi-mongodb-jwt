@@ -103,7 +103,9 @@
 
   methods: {
     async initialize() {
-      await this.$store.dispatch('stripe/query_products', {query: 'all_products', filter: 'all'});
+      await this.$store.dispatch('stripe/read_products');
+
+      // await this.$store.dispatch('stripe/query_products', {query: 'all_products', filter: 'all'});
     },
   },
     computed: {

@@ -15,6 +15,7 @@ const axiosHeaders = axios.create({
   baseURL: process.env.VUE_APP_URL,
   headers: { 'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}` }
 })
+
 axiosHeaders.interceptors.response.use(function (response) {
   return response
 }, function (error) {

@@ -13,7 +13,6 @@
         <!-- <router-link to="/signup" style="cursor: pointer"> -->
           <span>Sign Up</span>
         </router-link>
-        
   </div>
 </template>
 
